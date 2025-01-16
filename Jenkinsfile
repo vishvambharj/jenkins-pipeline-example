@@ -1,33 +1,24 @@
 pipeline {
     agent any
-
     tools {
-        maven "MAVEN"
-        jdk "JDK"
+        maven 'MAVEN'
     }
 
     stages {
-        stage('Initialize'){
-            steps{
-                echo "PATH = ${M2_HOME}/bin:${PATH}"
-                echo "M2_HOME = /opt/maven"
-            }
-        }
         stage('Build') {
             steps {
-                dir("/var/lib/jenkins/workspace/New_demo/my-app/") {
-                sh 'mvn -B -DskipTests clean package'
-                }
-            
+                echo 'Hello World'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins-jenkins ', url: 'https://github.com/vishvambharj/jenkins-pipeline-example.git']])
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         }
-     }
+    }
     post {
-       always {
-          junit(
-        allowEmptyResults: true,
-        testResults: '*/test-reports/.xml'
-      )
-      }
-   } 
-}
+        always {
+            junit(
+                allowEmptyResults:true,
+                testResults: 'test-reports/.xml'
+                )
+            }
+        }
+    }

@@ -1,7 +1,8 @@
 pipeline {
     agent any
     tools {
-        maven 'MAVEN'  // Make sure this corresponds to a valid Maven installation in Jenkins
+        maven 'MAVEN'  // Ensure Maven tool is properly configured
+        git 'Git'      // Ensure Git tool is properly configured
     }
 
     stages {
@@ -16,7 +17,6 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running Tests'
-                // Run tests using Maven
                 sh "mvn test"
             }
         }
@@ -24,15 +24,13 @@ pipeline {
         stage('Deliver') {
             steps {
                 echo 'Delivering the build artifacts'
-                // Archive build artifacts
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.jar', followSymlinks: false
-                
-                // Ensure the JAR file exists before attempting SCP
+
                 script {
                     def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
                     if (jarFile) {
-                        // SCP to remote server
-                        sh "scp -i /path/to/your/ssh/key ${jarFile} user@remote-server:/path/to/deploy"
+                        // Update the SSH key path and server hostname as needed
+                        sh "scp -i /path/to/your/actual/ssh/key ${jarFile} user@remote-server:/path/to/deploy"
                     } else {
                         error "No JAR file found to deploy!"
                     }
@@ -43,12 +41,14 @@ pipeline {
 
     post {
         always {
-            // Capture the test results and display them in Jenkins
-            junit(
-                allowEmptyResults: true,
-                testResults: 'test-reports/*.xml'  // Ensure this path matches where your test results are stored
-            )
+            script {
+                def testResults = findFiles(glob: 'test-reports/*.xml')
+                if (testResults) {
+                    junit testResults: 'test-reports/*.xml', allowEmptyResults: true
+                } else {
+                    echo 'No test results found.'
+                }
+            }
         }
     }
 }
-

@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'maven'  // Make sure this corresponds to a valid Maven installation in Jenkins
+        maven 'MAVEN'  // Make sure this corresponds to a valid Maven installation in Jenkins
     }
 
     stages {

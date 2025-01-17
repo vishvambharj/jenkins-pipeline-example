@@ -31,7 +31,7 @@ pipeline {
                         // Update the SSH key path and server hostname as needed
                         sh "scp -i /var/lib/jenkins/.ssh/id_rsa target/my-app-1.0-SNAPSHOT.jar deployuser@remote-server:/var/www/myapp/"
 
-"
+
                     } else {
                         error "No JAR file found to deploy!"
                     }

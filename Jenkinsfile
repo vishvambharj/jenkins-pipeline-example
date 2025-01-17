@@ -20,6 +20,22 @@ pipeline {
                 sh "mvn test"
             }
         }
+
+        stage('Deliver') {
+            steps {
+                echo 'Delivering the build artifacts'
+
+                // Example: Archive build artifacts (e.g., JAR, WAR files) from the target/ directory
+                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+
+                // Example: Deploy to a remote server (e.g., SCP, FTP, or deploy to a container)
+                // Here's a basic example of copying the artifact to a remote server using SCP:
+                script {
+                    // Assuming you have SSH credentials setup in Jenkins (e.g., "my-ssh-credentials")
+                    sh 'scp -i /path/to/your/ssh/key target/your-app.jar user@remote-server:/path/to/deploy'
+                }
+            }
+        }
     }
 
     post {
@@ -32,4 +48,3 @@ pipeline {
         }
     }
 }
-

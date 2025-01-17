@@ -29,7 +29,8 @@ pipeline {
                     def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
                     if (jarFile) {
                         // Update the SSH key path and server hostname as needed
-                        sh "scp -i /path/to/your/actual/ssh/key ${jarFile} user@remote-server:/path/to/deploy"
+                        sh "scp -i /path/to/your/actual/ssh/key ${jarFile} user@remote-server:user@remote-server:/var/www/myapp/
+"
                     } else {
                         error "No JAR file found to deploy!"
                     }

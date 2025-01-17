@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'MAVEN'  // Make sure this corresponds to a valid Maven installation in Jenkins
+        maven 'maven'  // Make sure this corresponds to a valid Maven installation in Jenkins
     }
 
     stages {
@@ -24,15 +24,18 @@ pipeline {
         stage('Deliver') {
             steps {
                 echo 'Delivering the build artifacts'
-
-                // Example: Archive build artifacts (e.g., JAR, WAR files) from the target/ directory
-                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
-
-                // Example: Deploy to a remote server (e.g., SCP, FTP, or deploy to a container)
-                // Here's a basic example of copying the artifact to a remote server using SCP:
+                // Archive build artifacts
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.jar', followSymlinks: false
+                
+                // Ensure the JAR file exists before attempting SCP
                 script {
-                    // Assuming you have SSH credentials setup in Jenkins (e.g., "my-ssh-credentials")
-                    sh 'scp -i /path/to/your/ssh/key target/your-app.jar user@remote-server:/path/to/deploy'
+                    def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
+                    if (jarFile) {
+                        // SCP to remote server
+                        sh "scp -i /path/to/your/ssh/key ${jarFile} user@remote-server:/path/to/deploy"
+                    } else {
+                        error "No JAR file found to deploy!"
+                    }
                 }
             }
         }
@@ -48,3 +51,4 @@ pipeline {
         }
     }
 }
+

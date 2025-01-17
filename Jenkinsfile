@@ -23,15 +23,18 @@ pipeline {
         stage('Deliver') {
             steps {
                 echo 'Delivering the build artifacts'
+                // Archive artifacts (like JAR files) after successful build
                 archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.jar', followSymlinks: false
 
                 script {
+                    // Dynamically find the JAR file to deploy
                     def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
+                    
+                    // If a JAR file exists, deploy it
                     if (jarFile) {
+                        echo "Found JAR file: ${jarFile}"
                         // Update the SSH key path and server hostname as needed
-                        sh "scp -i /var/lib/jenkins/.ssh/id_rsa target/my-app-1.0-SNAPSHOT.jar ubuntu@13.60.203.87:/var/www/myapp/"
-
-
+                        sh "scp -i /var/lib/jenkins/.ssh/id_rsa ${jarFile} ubuntu@13.60.203.87:/var/www/myapp/"
                     } else {
                         error "No JAR file found to deploy!"
                     }

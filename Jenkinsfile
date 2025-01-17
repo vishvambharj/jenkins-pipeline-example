@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         maven 'MAVEN'  // Ensure Maven tool is properly configured
-        git 'Git'      // Ensure Git tool is properly configured
     }
 
     stages {

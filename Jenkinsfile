@@ -33,7 +33,7 @@ pipeline {
                     if (jarFile) {
                         echo "Found JAR file: ${jarFile}"
                         // Proceed with SCP to deploy the file
-                        sh "scp -i /var/lib/jenkins/.ssh/id_rsa ${jarFile} ubuntu@13.60.203.87:/var/www/myapp/"
+                        sh "scp -i /var/lib/jenkins/.ssh/id_rsa ${jarFile} ubuntu@13.60.209.242:/var/www/myapp/"
                     } else {
                         error "No JAR file found to deploy!"
                     }

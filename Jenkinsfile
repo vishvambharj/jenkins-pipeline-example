@@ -43,16 +43,20 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                def testResults = findFiles(glob: 'test-reports/*.xml')
-                if (testResults) {
-                    junit testResults: 'test-reports/*.xml', allowEmptyResults: true
-                } else {
-                    echo 'No test results found.'
-                }
+    always {
+        script {
+            // Look for test result files
+            def testResults = findFiles(glob: '**/target/test-*.xml')
+            
+            // Check if test results exist before processing
+            if (testResults) {
+                junit '**/target/test-*.xml'  // Process the test results
+            } else {
+                echo 'No test results found.'  // Simply echo if no results
             }
         }
     }
+}
+
 }
 

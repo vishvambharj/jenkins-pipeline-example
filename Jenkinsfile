@@ -27,13 +27,13 @@ stages {
 
             script {
                 // Add the remote server's SSH key to known_hosts to avoid verification issues
-                sh "ssh-keyscan -H 13.60.203.87 >> /var/lib/jenkins/.ssh/known_hosts"
+                sh "ssh-keyscan -H 13.60.209.242 >> /var/lib/jenkins/.ssh/known_hosts"
 
                 def jarFile = sh(script: "ls target/*.jar", returnStdout: true).trim()
                 if (jarFile) {
                     echo "Found JAR file: ${jarFile}"
                     // Proceed with SCP to deploy the file
-                    sh "scp -i /var/lib/jenkins/.ssh/id_rsa ${jarFile} ubuntu@13.60.203.87:/var/www/myapp/"
+                    sh "scp -i /var/lib/jenkins/.ssh/id_rsa ${jarFile} ubuntu@13.60.209.242:/var/www/myapp/"
                 } else {
                     error "No JAR file found to deploy!"
                 }
